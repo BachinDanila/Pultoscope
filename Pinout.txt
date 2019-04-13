@@ -1,0 +1,14 @@
+TFT Display:
+LED -> 3.3V
+SCK -> 13
+SDA -> 11
+DC  -> 9
+RST -> 8
+CS  -> 10
+GND -> GND
+VCC -> 5V
+
+Buttons:
+scroll_left  -> 7
+scroll_right -> 6
+ok           -> 5

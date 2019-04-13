@@ -1,1 +1,1 @@
-# Pultoscope
+# Pultoscope - Library for oscilloscope based on Arduino and 1.8" tft display.

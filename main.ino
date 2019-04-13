@@ -10,8 +10,8 @@
 
 //Piout user settings
 #define levo 7
-#define ok 6
-#define pravo 5
+#define ok 5
+#define pravo 6
 #define vertikal 2   //размер вертикальной сетки(если "0" отключениа)
 
 //Define some colors
