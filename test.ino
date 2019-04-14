@@ -13,13 +13,14 @@
 
 // create an instance of the library
 Data data = Data(vertikal, levo, pravo, ok);
-Screen screen = Screen(cs, dc, rst, data);
+Screen screen = Screen(cs, dc, rst, &data);
 
 void setup() {
-  screen.begin();
+    data.set_reference_voltage_value(NULL);
+    screen.begin();
 }
 
 void loop() {
-  screen.do_hello_world();
-  delay(500);
+    screen.do_hello_world();
+    delay(500);
 }

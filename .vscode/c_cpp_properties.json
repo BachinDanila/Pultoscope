@@ -11,7 +11,7 @@
                 "/home/euler/.arduino15/packages/arduino/hardware/avr/1.6.23/cores/arduino/Arduino.h"
             ],
             "intelliSenseMode": "gcc-x64",
-            "compilerPath": "/usr/bin/gcc",
+            "compilerPath": "/usr/bin/avr-gcc",
             "cStandard": "c11",
             "cppStandard": "c++17"
         }
