@@ -1,21 +1,32 @@
 #include "Pultoscope.h"
 
-Data::Data(uint8_t grid_size, uint8_t left, uint8_t right, uint8_t ok){
+Data::Data(uint8_t left, uint8_t right, uint8_t ok){
     _scroll_left_pin = left;
     _scroll_right_pin = right;
     _ok_pin = ok;
-    _grid_size = grid_size;
     _Vmax = 0;
     _trigger_value = 0;
     _reference_voltage_flag = 1;
-    _top_menu = 1;
-    _x = 60;
     _Vexternal = 0;
     _t = 0;
+    _t_division_value = 0;
+}
+
+Screen::Screen(uint8_t cs, uint8_t dc, uint8_t reset,
+    uint8_t grid_size, Data *data): 
+    _tft(TFT(cs, dc, reset)),_data(data){
+
+    _cs = cs;
+    _dc = dc;
+    _reset = reset;
+    _tft = TFT(_cs, _dc, _reset);
+    _data = data;
+    _grid_size = grid_size;
+    _top_menu = 1;
+    _x = 60;
     _pause_time = 0;
     _pause_flag = 0;
     _pause_clean_flag = 0;
-    _t_division_value = 0;
 }
 
 uint8_t Data::get_max_voltage(){
@@ -40,7 +51,7 @@ void Data::read_data(){
     if (_trigger_value == 4){ADCSRA = 0b11100100;}  //delitel 16
     if (_trigger_value == 3){ADCSRA = 0b11100101;}  //delitel 32
     if (_trigger_value == 2){ADCSRA = 0b11100110;}  //delitel 64
-    if (_trigger_value < 2){ADCSRA = 0b11100111;}   //delitel 128
+    if (_trigger_value <  2){ADCSRA = 0b11100111;}   //delitel 128
     if (_trigger_value == 0){
         _t=micros(); 
         for(int i=0;i<500;i++){ 
@@ -72,26 +83,9 @@ void Data::set_external_power_source_voltage(uint8_t external_power_pin){
     _Vexternal = analogRead(external_power_pin)*5.3/1024;
 }
 
-void Data::set_reference_voltage_value(bool reference_voltage_flag){
-    if(reference_voltage_flag == NULL){
-        if(!_reference_voltage_flag){ADMUX = 0b11100101;} //Internal reference voltage 1,1V
-        if(_reference_voltage_flag){ADMUX = 0b01100101;}  //External reference voltage
-    }
-    else{
-        if(!reference_voltage_flag){ADMUX = 0b11100101;} //Internal reference voltage 1,1V
-        if(reference_voltage_flag){ADMUX = 0b01100101;}  //External reference voltage
-    }
-}
-
-Screen::Screen(uint8_t cs, uint8_t dc, 
-    uint8_t reset, Data *data): 
-    _tft(TFT(cs, dc, reset)),_data(data){
-
-    _cs = cs;
-    _dc = dc;
-    _reset = reset;
-    _tft = TFT(_cs, _dc, _reset);
-    _data = data;
+void Data::set_reference_voltage_value(){
+    if(!_reference_voltage_flag){ADMUX = 0b11100101;} //Internal reference voltage 1,1V
+    if(_reference_voltage_flag){ADMUX = 0b01100101;}  //External reference voltage
 }
 
 void Screen::begin(){
@@ -125,11 +119,11 @@ void Screen::draw_bottom_menu(){
     uint8_t trigger_value = _data->get_trigger_value();
     uint8_t t_division_value = _data->get_t_division_value();
 
-    if(trigger_value < 7) { _tft.print(t_division_value);   }
-    if(trigger_value == 7){ _tft.print(t_division_value/2); }
-    if(trigger_value == 8){ _tft.print(t_division_value/3); }
-    if(trigger_value == 9){ _tft.print(t_division_value/4); }
-    if(trigger_value == 10){ _tft.print(t_division_value/5);}
+    if(trigger_value <  7) _tft.print(t_division_value);
+    if(trigger_value == 7) _tft.print(t_division_value/2); 
+    if(trigger_value == 8) _tft.print(t_division_value/3);
+    if(trigger_value == 9) _tft.print(t_division_value/4);
+    if(trigger_value == 10)_tft.print(t_division_value/5);
     _tft.print("us  ");
     _tft.print("Vmax=");
     if(!(_data->get_reference_voltage_flag())){
@@ -141,4 +135,8 @@ void Screen::draw_bottom_menu(){
     _tft.print(" ");
     _tft.print("B");
     _tft.print(_data->get_external_power_source_voltage());
+}
+
+void Screen::top_menu_state_handler(){
+    if(_top_menu == 0){}
 }
