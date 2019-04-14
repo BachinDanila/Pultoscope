@@ -12,8 +12,8 @@
 #define pravo 6
 #define vertikal 0          //размер вертикальной сетки(если "0" отключениа)
 #define default_text_size 1
-#define display_width 128   
-#define display_height 160
+#define display_height 128   
+#define display_width 160
 #define tmp1 105
 #define tmp2 2.75
 
@@ -34,7 +34,7 @@ byte mass[501];//массив АЦП
 byte massDEL[501];
 byte menu=1;//переменная верхнего меню
 byte razv=0;//значение развертки
-float x=60;//счетчик оси Х
+float x=28;//счетчик оси Х
 int Vmax=0;// максимальное напряжение 
 float Vakb=0;//напряженеие АКБ
 unsigned long t=0;//переменная для ращета развертки
@@ -85,9 +85,9 @@ void Zamer(){//заполнение буфера АЦП
 }
 void MenuT(){//перерисовка нижнего меню    
     tft.setRotation(0);  
-    tft.fillRect(0, 10, 10,display_height, BLACK);//стирание поля меню низ
+    tft.fillRect(0, 10, 10,display_width, BLACK);//стирание поля меню низ
     tft.setRotation(1);
-    tft.setCursor(0,display_width - 8);
+    tft.setCursor(0,display_height - 8);
     tft.print("t=");
     if(razv<7){tft.print(t_del);}
     if(razv==7){tft.print(t_del/2);}
@@ -104,7 +104,7 @@ void MenuT(){//перерисовка нижнего меню
 }
 
 void loop() { 
-    Zamer();  
+    Zamer(); 
     //отрисовка и перебор меню###############################
     if(menu==0){
         tft.setRotation(1);
@@ -116,16 +116,15 @@ void loop() {
 
         if(digitalRead(pravo)==HIGH){
             tft.setRotation(0); 
-            tft.fillRect(30, 60, 140, 260, BLACK);//стиране поля графика
-            tft.fillRect(0, 0, 128, 35, BLACK);//стирание напряжения
+            tft.fillRect(21,29, display_height - 32 , display_width - 29, BLACK);//стиране поля графика  
+            tft.fillRect(16, 0, 97, 24, BLACK);//стирание напряжения
             opornoe=!opornoe;
         }
 
         if(digitalRead(levo)==HIGH){
             tft.setRotation(0);  
-            tft.setRotation(0); 
-            tft.fillRect(30, 60, 140, 260, BLACK);//стиране поля графика 
-            tft.fillRect(0, 0, 128, 35, BLACK);//стирание напряжения
+            tft.fillRect(21,29, display_height - 32 , display_width - 29, BLACK);//стиране поля графика  
+            tft.fillRect(16, 0, 97, 24, BLACK);//стирание напряжения
             opornoe=!opornoe;
         }
 
@@ -137,21 +136,23 @@ void loop() {
     if(menu==1){
         tft.setRotation(1);
         tft.setTextColor(RED);
-        tft.fillRect(display_height - 54, 0,50, 10, CYAN);
+        tft.fillRect(display_width - 54, 0,50, 10, CYAN);
         tft.setCursor(0,2);
         if(opornoe==0) tft.print("op-1.1V ");
         if(opornoe==1) tft.print("op-5.3V ");
 
         if(digitalRead(pravo)==HIGH){//доработать скорость
             tft.setRotation(0); 
-            tft.fillRect(45, 60, 140, 260, BLACK);//стиране поля графика
+            tft.fillRect(21,29, display_height - 32 , display_width - 29, BLACK);//стиране поля графика  
+            tft.fillRect(display_height - 12,display_width - 70, 12 , 10, BLACK);
             razv++;
             if(razv==11) razv=10; 
         }
 
         if(digitalRead(levo)==HIGH){//доработать скорость
             tft.setRotation(0); 
-            tft.fillRect(45, 60, 140, 260, BLACK);//стиране поля графика
+            tft.fillRect(21,29, display_height - 32 , display_width - 29, BLACK);//стиране поля графика  
+            tft.fillRect(display_height - 12,display_width - 70, 12 , 10, BLACK);
             razv--;
             if(razv==255) razv=0;
         }
@@ -167,7 +168,7 @@ void loop() {
             clen_p=1;  
             tft.setRotation(1);
             tft.setTextColor(RED);
-            tft.fillRect(display_height - 54, 0,50, 10, CYAN);
+            tft.fillRect(display_width - 54, 0,50, 10, CYAN);
             tft.setCursor(0,2);
             if(opornoe==0) tft.print("op-1.1V ");
             if(opornoe==1) tft.print("op-5.3V ");
@@ -180,10 +181,10 @@ void loop() {
     if(digitalRead(ok)==HIGH){
         menu++;
         tft.setRotation(0); 
-        tft.fillRect(30, 35, 160, 160, BLACK);//стиране поля графика  
+        tft.fillRect(21,29, display_height - 32 , display_width - 29, BLACK);//стиране поля графика  
         if(menu==3) { menu=0; paus=0; clen_p=0;} 
         tft.setRotation(1); 
-        tft.fillRect(0, 0,160, 30, BLACK);    
+        tft.fillRect(0, 0, display_width, 12, BLACK); //Стирание верхнего меню   
     }
     //отрисовка и перебор меню###############################
 
@@ -297,7 +298,7 @@ void loop() {
     //отрисовка графика
     if(paus==0){
         tft.setRotation(0); 
-        x=27;
+        x=28;
         for(int y=0;y<260;y++){
             tft.setRotation(1); 
             if(razv <  7)  x++;
@@ -324,8 +325,8 @@ void loop() {
     if(paus==1){                                        //режим паузы
         if(digitalRead(pravo)==HIGH){                   //листаем вправо
             tft.setRotation(0); 
-            tft.fillRect(45, 60, 140, 260, BLACK);      //стиране графика 
-            x=27;
+            tft.fillRect(21,29, display_height - 32 , display_width - 29, BLACK);//стиране поля графика  
+            x=28;
             for(int y=0;y<130;y++){
                 tft.setRotation(1);
                 if(razv  <  7) x++;
@@ -344,8 +345,8 @@ void loop() {
         }
         if(digitalRead(levo)==HIGH){                    //листаем влево
             tft.setRotation(0); 
-            tft.fillRect(45, 60, 140, 260, BLACK);      //стиране графика 
-            x=27;
+            tft.fillRect(21,29, display_height - 32 , display_width - 29, BLACK);//стиране поля графика  
+            x=28;
             for(int y=0;y<160;y++){
                 tft.setRotation(1); 
                 if(razv  <  7) x++;
