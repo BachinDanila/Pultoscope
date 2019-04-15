@@ -206,7 +206,7 @@ void Screen::draw_default_top_menu(){
     }
 
     _tft.setRotation(1); 
-    _tft.print("  scale*");
+    _tft.print(" scale*");
     _tft.print(_data->get_scale());
     _tft.print("  PauseOFF");
 }
@@ -221,7 +221,7 @@ void Screen::draw_pause_menu(){
         _tft.setCursor(0,2);
         if(!_data->get_reference_voltage_flag()) _tft.print("op-1.1V ");
         if( _data->get_reference_voltage_flag()) _tft.print("op-5.3V ");
-        _tft.print("  scale*");
+        _tft.print(" scale*");
         _tft.print(_data->get_scale());
         if(!_pause_flag) _tft.print("  PauseOFF");
         if( _pause_flag) _tft.print("  PauseON");
@@ -251,7 +251,7 @@ void Screen::draw_reference_voltage_choose_menu(){
     }
 
     _tft.setRotation(1);  
-    _tft.print("  scale*");
+    _tft.print(" scale*");
     _tft.print(_data->get_scale());
     _tft.print("  PauseOFF");
 }
@@ -272,6 +272,7 @@ void Screen::pause_button_handler(){
 }
 
 void Screen::draw_voltage_axis(){
+    _tft.setRotation(0);
     _tft.drawFastHLine(20,28,95,BLUE);
     _tft.drawFastHLine(20,27,95,BLUE);
 
@@ -283,6 +284,7 @@ void Screen::draw_voltage_axis(){
 }
 
 void Screen::draw_time_axis(){
+    _tft.setRotation(0);
     _tft.drawFastVLine(19,27,141,RED);
     _tft.drawFastVLine(20,27,140,RED);
 
@@ -296,6 +298,7 @@ void Screen::draw_time_axis(){
 }
 
 void Screen::draw_grid(){
+    _tft.setRotation(0);
     _tft.drawFastHLine(75,310,5*_grid_size, YELLOW);
     _tft.drawFastHLine(110,310,5*_grid_size,YELLOW);
     _tft.drawFastHLine(145,310,5*_grid_size,YELLOW);
@@ -339,6 +342,9 @@ void Screen::draw_grid(){
 }
 
 void Screen::draw_voltage_scale(){
+    _tft.setRotation(1);  
+    _tft.setTextColor(RED);
+
     if(!_data->get_reference_voltage_flag()){
         _tft.setCursor(0, 105);_tft.println("0.00"); 
         _tft.setCursor(0, 87); _tft.println("0.22"); 
@@ -420,7 +426,7 @@ void Screen::draw_graph_pause(){
             if(scale == 10) _x+=5;
 
             //график
-            _tft.drawLine(_x+1,graph_lower_bound - -_data->get_adc_buffer_element(y)/
+            _tft.drawLine(_x+1,graph_lower_bound - _data->get_adc_buffer_element(y)/
                 graph_upper_bound + 1, _x + 2, graph_lower_bound -
                 _data->get_adc_buffer_element(y+1)/ graph_upper_bound+1, GREEN);
 
@@ -460,4 +466,17 @@ void Screen::draw_graph_pause(){
         }
         draw_bottom_menu();
     } 
+}
+
+void Screen::top_menu_state_handler(){
+    if(_top_menu == 0)
+        draw_reference_voltage_choose_menu();
+    if(_top_menu == 1)
+        draw_default_top_menu();
+    if(_top_menu == 2)
+        draw_pause_menu();
+}
+
+bool Screen::get_pause_flag(){
+    return _pause_flag;
 }

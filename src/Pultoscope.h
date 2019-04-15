@@ -24,7 +24,7 @@
 #define display_width 160               //Display width(pixels)
 #define graph_lower_bound 105           //Constant which defines lower bound of the graph
 #define graph_upper_bound 2.75          //Constant which defines upper bound of the graph
-#define horizontal_axis_pixel_step 18
+#define horizontal_axis_pixel_step 25
 
 class Data {
     public:
@@ -72,12 +72,14 @@ class Screen {
         void draw_default_top_menu();               //Top menu mode 1(choose scale)
         void draw_pause_menu();                     //Top menu mode 2(pause)
         void pause_button_handler();                //Handle pause button state
+        void top_menu_state_handler();              //Handle top menu state
         void draw_voltage_axis();                   //Draw voltage vertical axis
         void draw_time_axis();                      //Draw time horizontal axis
         void draw_grid();                           //Draw grid
         void draw_voltage_scale();                  //Draw voltage scale
         void draw_graph_default();                  //Draw graph in default mode 
         void draw_graph_pause();                    //Draw graph in pause mode
+        bool get_pause_flag();                      //Get pause flag
     private:
         uint8_t _cs;                //Chip Select pin
         uint8_t _dc;                //Dc or A0 pin on tft display
